@@ -51,7 +51,7 @@ namespace WebAPI.Tests.Infrastructure
                 var response = await client.PostAsync(url,
                     new ObjectContent(typeof(T), dto, jsonFormatter, "application/json"));
                 if (response.IsSuccessStatusCode == false)
-                    throw new Exception(await response.Content.ReadAsStringAsync());
+                    throw new Exception($"{response.StatusCode}: {await response.Content.ReadAsStringAsync()}");
 
                 var result = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<TResult>(result);

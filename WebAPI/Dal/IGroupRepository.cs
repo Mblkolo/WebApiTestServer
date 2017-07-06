@@ -12,12 +12,14 @@ namespace WebAPI.Dal
         Task<long> CreateGroup(long userId, string name);
         Task<GroupMember> GetById(long groupId, long userId);
         Task<GroupMember[]> GetMyGroups(long userId);
+        Task<Note> AddNote(long groupid, string text);
     }
 
     public class GroupRepository : IGroupRepository
     {
         private static long Id;
         private static long MemberId;
+        private static long NoteId;
         private static object Locker = new object();
         private static List<Group> groups = new List<Group>();
 
@@ -59,6 +61,23 @@ namespace WebAPI.Dal
             lock (Locker)
             {
                 return Task.FromResult(groups.SelectMany(x => x.Members).Where(x => x.UserId == userId).ToArray());
+            }
+        }
+
+        public Task<Note> AddNote(long groupid, string text)
+        {
+            lock (Locker)
+            {
+                var group = groups.Single(x => x.Id == groupid);
+                var note = new Note
+                {
+                    Id = ++NoteId,
+                    Text = text
+                };
+
+                group.Notes.Add(note);
+
+                return Task.FromResult(note);
             }
         }
     }

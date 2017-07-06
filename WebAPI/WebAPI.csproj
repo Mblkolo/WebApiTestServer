@@ -121,8 +121,10 @@
     <Compile Include="Controllers\ItemsController.cs" />
     <Compile Include="Dal\IGroupRepository.cs" />
     <Compile Include="Dto\CreateGroupDto.cs" />
+    <Compile Include="Dto\CreateNoteDto.cs" />
     <Compile Include="Dto\GroupDto.cs" />
     <Compile Include="Dto\ItemDto.cs" />
+    <Compile Include="Dto\NoteDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

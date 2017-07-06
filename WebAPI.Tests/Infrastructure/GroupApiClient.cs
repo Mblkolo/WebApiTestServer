@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using WebAPI.Controllers;
 using WebAPI.Dto;
 
@@ -24,5 +25,12 @@ namespace WebAPI.Tests.Infrastructure
             return await _requester.PostAsync<CreateGroupDto, GroupMemberDto>("/api/group", token, dto);
         }
 
+        internal async Task<NoteDto> AddNote(string token, long groupId, string noteText)
+        {
+            return await _requester.PostAsync<CreateNoteDto, NoteDto>($"/api/group/{groupId}/notes", token, new CreateNoteDto
+            {
+                Text = noteText
+            });
+        }
     }
 }
