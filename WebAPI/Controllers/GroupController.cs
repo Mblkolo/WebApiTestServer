@@ -59,17 +59,6 @@ namespace WebAPI.Controllers
 
     }
 
-    public class CreateGroupDto
-    {
-        public string Name { get; set; }
-    }
-
-    public class GroupDto
-    {
-        public long Id { get; set; }
-        public string Name { get; set; }
-    }
-
     public class Group
     {
         public long Id { get; set; }

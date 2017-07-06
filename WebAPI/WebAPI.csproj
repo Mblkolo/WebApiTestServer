@@ -120,6 +120,8 @@
     <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\ItemsController.cs" />
     <Compile Include="Dal\IGroupRepository.cs" />
+    <Compile Include="Dto\CreateGroupDto.cs" />
+    <Compile Include="Dto\GroupDto.cs" />
     <Compile Include="Dto\ItemDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
