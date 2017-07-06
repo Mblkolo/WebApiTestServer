@@ -21,7 +21,7 @@ namespace WebAPI.Tests.Infrastructure
 
         public async Task<GroupDto> CreateGroup(string token, CreateGroupDto dto)
         {
-            return await _requester.GetAsync<GroupDto>("/api/group", token);
+            return await _requester.PostAsync<CreateGroupDto, GroupDto>("/api/group", token, dto);
         }
 
     }

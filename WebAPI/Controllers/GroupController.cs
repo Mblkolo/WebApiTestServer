@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
             return Ok(Bind(storedGroup));
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IHttpActionResult> Get([FromBody] CreateGroupDto dto)
         {
             long userId = GetUserId();
