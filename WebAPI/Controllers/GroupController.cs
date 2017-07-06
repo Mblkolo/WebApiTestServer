@@ -83,6 +83,30 @@ namespace WebAPI.Controllers
             return Ok(Bind(storedGroup));
         }
 
+        [HttpPost]
+        [Route("{groupid:long}/setModerator/{groupmemberid:long}")]
+        public async Task<IHttpActionResult> setModerator(long groupid, long groupmemberid)
+        {
+            long userId = GetUserId();
+
+            var groupMember = await _groupRepository.GetById(groupid, userId);
+            if (groupMember == null)
+                return NotFound();
+
+            if (groupMember.Role != GroupMemberRole.Owner)
+                return BadRequest("Access denited");
+
+            var changedMember= groupMember.Group.Members.SingleOrDefault(x => x.Id == groupmemberid);
+            if(changedMember == null || changedMember.Role == GroupMemberRole.Owner)
+                return BadRequest("Member not found or owner");
+
+            changedMember.Role = GroupMemberRole.Moderator;
+
+            GroupMember storedGroup = await _groupRepository.GetById(groupid, changedMember.UserId);
+            return Ok(Bind(storedGroup));
+        }
+
+
         private NoteDto Bind(Note note)
         {
             return new NoteDto

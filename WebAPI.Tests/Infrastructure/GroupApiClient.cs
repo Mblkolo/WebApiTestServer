@@ -37,5 +37,10 @@ namespace WebAPI.Tests.Infrastructure
         {
             return await _requester.PostAsync<object, GroupMember>($"/api/group/{groupId}/join", token, new object());
         }
+
+        public async Task<GroupMember> SetModerator(string token, long groupId, long groupMemberId)
+        {
+            return await _requester.PostAsync<object, GroupMember>($"/api/group/{groupId}/setModerator/{groupMemberId}", token, new object());
+        }
     }
 }

@@ -86,6 +86,25 @@ namespace WebAPI.Tests
             Assert.That(userMember.Group.Id, Is.EqualTo(groupOwner.Group.Id));
         }
 
+        [Test]
+        public async Task SetModeratorTest()
+        {
+            var adminToken = await ApiClient.Account.GetToken("123", "456");
+
+            var groupOwner = await ApiClient.Group.CreateGroup(adminToken, new CreateGroupDto
+            {
+                Name = "Тестовая группа " + DateTime.UtcNow.Ticks
+            });
+
+            var userToken = await ApiClient.Account.GetToken("aaa", "bbb");
+
+            GroupMember userMember = await ApiClient.Group.Join(userToken, groupOwner.Group.Id);
+
+            GroupMember userMemberAsModerator = await ApiClient.Group.SetModerator(adminToken, groupOwner.Group.Id, userMember.Id);
+
+            Assert.That(userMemberAsModerator, Is.Not.Null);
+            Assert.That(userMemberAsModerator.Role, Is.EqualTo(GroupMemberRole.Moderator));
+        }
 
     }
 }
