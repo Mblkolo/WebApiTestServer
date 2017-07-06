@@ -14,14 +14,14 @@ namespace WebAPI.Tests.Infrastructure
             _requester = requester;
         }
 
-        public async Task<GroupDto[]> GetGroups(string token)
+        public async Task<GroupMemberDto[]> GetGroups(string token)
         {
-            return await _requester.GetAsync<GroupDto[]>("/api/group", token);
+            return await _requester.GetAsync<GroupMemberDto[]>("/api/group", token);
         }
 
-        public async Task<GroupDto> CreateGroup(string token, CreateGroupDto dto)
+        public async Task<GroupMemberDto> CreateGroup(string token, CreateGroupDto dto)
         {
-            return await _requester.PostAsync<CreateGroupDto, GroupDto>("/api/group", token, dto);
+            return await _requester.PostAsync<CreateGroupDto, GroupMemberDto>("/api/group", token, dto);
         }
 
     }

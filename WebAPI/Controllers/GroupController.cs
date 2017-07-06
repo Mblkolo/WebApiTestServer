@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System;
 using System.Security.Claims;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace WebAPI.Controllers
 {
@@ -26,25 +27,38 @@ namespace WebAPI.Controllers
 
             long userId = GetUserId();
 
-            long groupId = await _groupRepository.CreateItem(userId, dto.Name);
+            long groupId = await _groupRepository.CreateGroup(userId, dto.Name);
 
-            Group storedGroup = await _groupRepository.GetById(groupId);
-            return Ok(Bind(storedGroup));
+            GroupMember storedGroup = await _groupRepository.GetById(groupId, userId);
+
+            var result = Bind(storedGroup);
+            return Ok(result);
         }
 
         [HttpGet]
-        public async Task<IHttpActionResult> Get([FromBody] CreateGroupDto dto)
+        public async Task<IHttpActionResult> Get()
         {
             long userId = GetUserId();
 
-            Group[] groups = await _groupRepository.GetMyGroups(userId);
+            GroupMember[] members = await _groupRepository.GetMyGroups(userId);
 
-            return Ok(groups.Select(Bind).ToArray());
+            return Ok(members.Select(Bind).ToArray());
         }
 
         private long GetUserId()
         {
             return long.Parse((User.Identity as ClaimsIdentity)?.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        }
+
+        private GroupMemberDto Bind(GroupMember groupMember)
+        {
+            return new GroupMemberDto
+            {
+                Id = groupMember.Id,
+                UserId = groupMember.UserId,
+                Role = groupMember.Role,
+                Group = Bind(groupMember.Group)
+            };
         }
 
         private GroupDto Bind(Group storedGroup)
@@ -55,14 +69,32 @@ namespace WebAPI.Controllers
                 Name = storedGroup.Name
             };
         }
-
-
     }
 
     public class Group
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        public List<GroupMember> Members { get; set; } = new List<GroupMember>();
+    }
+
+    public enum GroupMemberRole
+    {
+        User,
+        Owner,
+        Moderator
+    }
+
+    public class GroupMember
+    {
+        public GroupMember(Group group)
+        {
+            Group = group;
+        }
+
+        public long Id { get; set; }
+        public Group Group {get;}
+        public GroupMemberRole Role { get; set; }
         public long UserId { get; internal set; }
     }
 }

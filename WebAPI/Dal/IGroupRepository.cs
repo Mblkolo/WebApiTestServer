@@ -9,27 +9,36 @@ namespace WebAPI.Dal
 {
     public interface IGroupRepository
     {
-        Task<long> CreateItem(long userId, string name);
-        Task<Group> GetById(long groupId);
-        Task<Group[]> GetMyGroups(long userId);
+        Task<long> CreateGroup(long userId, string name);
+        Task<GroupMember> GetById(long groupId, long userId);
+        Task<GroupMember[]> GetMyGroups(long userId);
     }
 
     public class GroupRepository : IGroupRepository
     {
         private static long Id;
+        private static long MemberId;
         private static object Locker = new object();
         private static List<Group> groups = new List<Group>();
 
-        public Task<long> CreateItem(long userId, string name)
+        public Task<long> CreateGroup(long userId, string name)
         {
             lock (Locker)
             {
                 var group = new Group
                 {
                     Id = ++Id,
-                    Name = name,
+                    Name = name
+                };
+
+                var groupMember = new GroupMember(group)
+                {
+                    Id = ++MemberId,
+                    Role = GroupMemberRole.Owner,
                     UserId = userId
                 };
+
+                group.Members.Add(groupMember);
 
                 groups.Add(group);
 
@@ -37,19 +46,19 @@ namespace WebAPI.Dal
             }
         }
 
-        public Task<Group> GetById(long groupId)
+        public Task<GroupMember> GetById(long groupId, long userId)
         {
             lock (Locker)
             {
-                return Task.FromResult(groups.SingleOrDefault(x => x.Id == groupId));
+                return Task.FromResult(groups.SingleOrDefault(x => x.Id == groupId)?.Members.SingleOrDefault(x => x.UserId == userId));
             }
         }
 
-        public Task<Group[]> GetMyGroups(long userId)
+        public Task<GroupMember[]> GetMyGroups(long userId)
         {
             lock (Locker)
             {
-                return Task.FromResult(groups.Where(x => x.UserId == userId).ToArray());
+                return Task.FromResult(groups.SelectMany(x => x.Members).Where(x => x.UserId == userId).ToArray());
             }
         }
     }
