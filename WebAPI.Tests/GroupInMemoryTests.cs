@@ -123,5 +123,25 @@ namespace WebAPI.Tests
             Assert.ThrowsAsync<RequestException>(async () => await ApiClient.Group.AddNote(userToken, groupOwner.Group.Id, "Этот текст не должен добавиться"));
         }
 
+        [Test]
+        public async Task ModeratoCanAddNotesTest()
+        {
+            var adminToken = await ApiClient.Account.GetToken("123", "456");
+
+            var groupOwner = await ApiClient.Group.CreateGroup(adminToken, new CreateGroupDto
+            {
+                Name = "Тестовая группа " + DateTime.UtcNow.Ticks
+            });
+
+            var userToken = await ApiClient.Account.GetToken("aaa", "bbb");
+
+            GroupMember userMember = await ApiClient.Group.Join(userToken, groupOwner.Group.Id);
+            await ApiClient.Group.SetModerator(adminToken, groupOwner.Group.Id, userMember.Id);
+
+            var note = await ApiClient.Group.AddNote(userToken, groupOwner.Group.Id, "Заметка от модератора");
+
+            Assert.That(note, Is.Not.Null);
+            Assert.That(note.Text, Is.EqualTo("Заметка от модератора"));
+        }
     }
 }
