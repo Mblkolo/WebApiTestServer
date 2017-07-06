@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
 
-namespace WebAPI.Tests
+namespace WebAPI.Tests.Infrastructure
 {
 
     public class ApiClientAccount

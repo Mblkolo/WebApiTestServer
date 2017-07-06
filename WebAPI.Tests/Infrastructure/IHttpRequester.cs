@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace WebAPI.Tests
+namespace WebAPI.Tests.Infrastructure
 {
     public interface IHttpRequester
     {

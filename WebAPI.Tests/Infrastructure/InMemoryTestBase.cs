@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace WebAPI.Tests
+namespace WebAPI.Tests.Infrastructure
 {
  
     public class InMemoryTestBase

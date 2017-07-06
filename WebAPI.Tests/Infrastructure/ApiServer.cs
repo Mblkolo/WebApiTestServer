@@ -7,7 +7,7 @@ using Microsoft.Owin.Testing;
 using WebAPI.Controllers;
 using WebAPI.Tests.Fakes;
 
-namespace WebAPI.Tests
+namespace WebAPI.Tests.Infrastructure
 {
     public class ApiServer : IDisposable
     {

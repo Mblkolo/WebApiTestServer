@@ -79,16 +79,16 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiClient.cs" />
-    <Compile Include="ApiClientAccount.cs" />
-    <Compile Include="ApiServer.cs" />
+    <Compile Include="Infrastructure\ApiClient.cs" />
+    <Compile Include="Infrastructure\ApiClientAccount.cs" />
+    <Compile Include="Infrastructure\ApiServer.cs" />
     <Compile Include="Fakes\ItemsRepositoryFake.cs" />
-    <Compile Include="HttpRequester.cs" />
-    <Compile Include="ApiClientItems.cs" />
-    <Compile Include="IHttpRequester.cs" />
-    <Compile Include="InMemoryTestBase.cs" />
+    <Compile Include="Infrastructure\HttpRequester.cs" />
+    <Compile Include="Infrastructure\GroupApiClient.cs" />
+    <Compile Include="Infrastructure\IHttpRequester.cs" />
+    <Compile Include="Infrastructure\InMemoryTestBase.cs" />
     <Compile Include="ItemGenerator.cs" />
-    <Compile Include="ItemsInMemoryTests.cs" />
+    <Compile Include="GroupInMemoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
