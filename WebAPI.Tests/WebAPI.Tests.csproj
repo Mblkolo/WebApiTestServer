@@ -91,6 +91,7 @@
     <Compile Include="Infrastructure\GroupApiClient.cs" />
     <Compile Include="Infrastructure\IHttpRequester.cs" />
     <Compile Include="Infrastructure\InMemoryTestBase.cs" />
+    <Compile Include="Infrastructure\RequestException.cs" />
     <Compile Include="ItemGenerator.cs" />
     <Compile Include="GroupInMemoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

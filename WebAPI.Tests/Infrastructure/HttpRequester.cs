@@ -33,11 +33,9 @@ namespace WebAPI.Tests.Infrastructure
             using (var client = CreateClient(token))
             {
                 var response = await client.GetAsync(url);
-                if (response.IsSuccessStatusCode == false)
-                    throw new Exception(await response.Content.ReadAsStringAsync());
 
-                var result = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<TResult>(result);
+                await CheckStatusCode(response);
+                return await Deserialize<TResult>(response);
             }
         }
 
@@ -48,13 +46,10 @@ namespace WebAPI.Tests.Infrastructure
                 var jsonFormatter = new JsonMediaTypeFormatter();
                 Startup.ConfigureJsonFormatter(jsonFormatter);
 
-                var response = await client.PostAsync(url,
-                    new ObjectContent(typeof(T), dto, jsonFormatter, "application/json"));
-                if (response.IsSuccessStatusCode == false)
-                    throw new Exception($"{response.StatusCode}: {await response.Content.ReadAsStringAsync()}");
+                var response = await client.PostAsync(url, new ObjectContent(typeof(T), dto, jsonFormatter, "application/json"));
 
-                var result = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<TResult>(result);
+                await CheckStatusCode(response);
+                return await Deserialize<TResult>(response);
             }
         }
 
@@ -63,12 +58,20 @@ namespace WebAPI.Tests.Infrastructure
             using (var client = CreateClient(token))
             {
                 var response = await client.DeleteAsync(url);
-                if (response.IsSuccessStatusCode == false)
-                    throw new Exception(await response.Content.ReadAsStringAsync());
-
-                await Task.CompletedTask;
+                await CheckStatusCode(response);
             }
         }
 
+        private async Task CheckStatusCode(HttpResponseMessage response)
+        {
+            if (response.IsSuccessStatusCode == false)
+                throw new RequestException($"{response.StatusCode}: {await response.Content.ReadAsStringAsync()}");
+        }
+
+        private async Task<T> Deserialize<T>(HttpResponseMessage response)
+        {
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(result);
+        }
     }
 }
