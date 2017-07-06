@@ -25,12 +25,17 @@ namespace WebAPI.Tests.Infrastructure
             return await _requester.PostAsync<CreateGroupDto, GroupMemberDto>("/api/group", token, dto);
         }
 
-        internal async Task<NoteDto> AddNote(string token, long groupId, string noteText)
+        public async Task<NoteDto> AddNote(string token, long groupId, string noteText)
         {
             return await _requester.PostAsync<CreateNoteDto, NoteDto>($"/api/group/{groupId}/notes", token, new CreateNoteDto
             {
                 Text = noteText
             });
+        }
+
+        public async Task<GroupMember> Join(string token, long groupId)
+        {
+            return await _requester.PostAsync<object, GroupMember>($"/api/group/{groupId}/join", token, new object());
         }
     }
 }

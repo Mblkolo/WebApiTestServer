@@ -55,10 +55,9 @@ namespace WebAPI.Tests
         {
             var adminToken = await ApiClient.Account.GetToken("123", "456");
 
-            var groupName = "Тестовая группа " + DateTime.UtcNow.Ticks;
             var member = await ApiClient.Group.CreateGroup(adminToken, new CreateGroupDto
             {
-                Name = groupName
+                Name = "Тестовая группа " + DateTime.UtcNow.Ticks
             });
 
             var noteDto = await ApiClient.Group.AddNote(adminToken, member.Group.Id, "Тестовая заметка");
@@ -66,5 +65,27 @@ namespace WebAPI.Tests
             Assert.That(noteDto, Is.Not.Null);
             Assert.That(noteDto.Text, Is.EqualTo("Тестовая заметка"));
         }
+
+
+        [Test]
+        public async Task JoinToGroupTest()
+        {
+            var adminToken = await ApiClient.Account.GetToken("123", "456");
+
+            var groupOwner = await ApiClient.Group.CreateGroup(adminToken, new CreateGroupDto
+            {
+                Name = "Тестовая группа " + DateTime.UtcNow.Ticks
+            });
+
+            var userToken = await ApiClient.Account.GetToken("aaa", "bbb");
+
+            GroupMember userMember = await ApiClient.Group.Join(userToken, groupOwner.Group.Id);
+
+            Assert.That(userMember, Is.Not.Null);
+            Assert.That(userMember.Role, Is.EqualTo(GroupMemberRole.User));
+            Assert.That(userMember.Group.Id, Is.EqualTo(groupOwner.Group.Id));
+        }
+
+
     }
 }

@@ -13,6 +13,7 @@ namespace WebAPI.Dal
         Task<GroupMember> GetById(long groupId, long userId);
         Task<GroupMember[]> GetMyGroups(long userId);
         Task<Note> AddNote(long groupid, string text);
+        Task<GroupMember> AddMember(long groupId, long userId);
     }
 
     public class GroupRepository : IGroupRepository
@@ -78,6 +79,24 @@ namespace WebAPI.Dal
                 group.Notes.Add(note);
 
                 return Task.FromResult(note);
+            }
+        }
+
+        public Task<GroupMember> AddMember(long groupId, long userId)
+        {
+            lock (Locker)
+            {
+                var group = groups.Single(x => x.Id == groupId);
+                var groupMember = new GroupMember(group)
+                {
+                    Id = ++MemberId,
+                    Role = GroupMemberRole.User,
+                    UserId = userId
+                };
+
+                group.Members.Add(groupMember);
+
+                return Task.FromResult(groupMember);
             }
         }
     }

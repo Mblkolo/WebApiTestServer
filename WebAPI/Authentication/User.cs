@@ -4,5 +4,6 @@ namespace WebAPI.Authentication
     {
         public string Login;
         public string Password;
+        public long Id;
     }
 }

@@ -46,27 +46,23 @@ namespace WebAPI.Authentication
         {
             var registeredUsers = new List<User>
             {
-                new User {Login = "123", Password = "456"},
-                new User {Login = "aaa", Password = "bbb"}
+                new User {Id = 12, Login = "123", Password = "456"},
+                new User {Id = 37, Login = "aaa", Password = "bbb"}
             };
 
             var login = context.Parameters["login"];
             var password = context.Parameters["password"];
-            string userId;
+            long? userId;
 
             var user = registeredUsers.SingleOrDefault(x => x.Login == login && x.Password == password);
-            if (user != null)
-            {
-                userId = user.Login;
-            }
-            else
+            if (user == null)
             {
                 context.Rejected();
                 return Task.FromResult<object>(null);
             }
-
+            
             var oAuthIdentity = new ClaimsIdentity(OAuthDefaults.AuthenticationType);
-            oAuthIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, userId)); // ?
+            oAuthIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())); // ?
             var ticket = new AuthenticationTicket(oAuthIdentity, null);
 
             context.Validated(ticket);

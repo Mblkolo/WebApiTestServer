@@ -67,6 +67,22 @@ namespace WebAPI.Controllers
             return Ok(Bind(note));
         }
 
+        [HttpPost]
+        [Route("{groupid:long}/join")]
+        public async Task<IHttpActionResult> Join(long groupid)
+        {
+            long userId = GetUserId();
+
+            var groupMember = await _groupRepository.GetById(groupid, userId);
+            if (groupMember != null)
+                return BadRequest("You already member of the group");
+
+            await _groupRepository.AddMember(groupid, userId);
+
+            GroupMember storedGroup = await _groupRepository.GetById(groupid, userId);
+            return Ok(Bind(storedGroup));
+        }
+
         private NoteDto Bind(Note note)
         {
             return new NoteDto
