@@ -6,6 +6,7 @@ using Castle.Windsor;
 using Microsoft.Owin.Testing;
 using WebAPI.Controllers;
 using WebAPI.Tests.Fakes;
+using System.Web.Http;
 
 namespace WebAPI.Tests.Infrastructure
 {
@@ -26,7 +27,7 @@ namespace WebAPI.Tests.Infrastructure
 
         public void Reset()
         {
-            Startup.ItemsRepository.Clear();
+            //Startup.ItemsRepository.Clear();
         }
 
         public void Dispose()
@@ -47,23 +48,11 @@ namespace WebAPI.Tests.Infrastructure
 
         protected override WindsorContainer CreateWindsorContainer()
         {
-            var container = new WindsorContainer();
-            container.AddFacility<TypedFactoryFacility>();
-            container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel, true));
-
-            container.Register(
-                Component.For<ItemsController>()
-                    .ImplementedBy<ItemsController>()
-                    .LifestyleTransient());
-
-            ItemsRepository = new ItemsRepositoryFake();
-            container.Register(
-                Component.For<IItemsRepository>()
-                    //.ImplementedBy<ItemsRepositoryFake>()
-                    .Instance(ItemsRepository)
-                    .LifestyleSingleton());
+            var container = base.CreateWindsorContainer();
 
             return container;
         }
+
+        protected override IncludeErrorDetailPolicy GetErrorDetailPolicy() => IncludeErrorDetailPolicy.Always;
     }
 }

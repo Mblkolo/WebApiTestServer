@@ -12,6 +12,7 @@ using Newtonsoft.Json.Serialization;
 using Owin;
 using WebAPI.Controllers;
 using WebAPI.IoC;
+using WebAPI.Dal;
 
 [assembly: OwinStartup(typeof(WebAPI.Startup))]
 
@@ -23,6 +24,9 @@ namespace WebAPI
         public void Configuration(IAppBuilder app)
         {
             var configuration = new HttpConfiguration();
+
+            configuration.IncludeErrorDetailPolicy = GetErrorDetailPolicy();
+
             ConfigureJsonFormatter(configuration.Formatters.JsonFormatter);
             WebApiConfig.Register(configuration);
 
@@ -34,6 +38,8 @@ namespace WebAPI
             
             app.UseWebApi(configuration);
         }
+
+        protected virtual IncludeErrorDetailPolicy GetErrorDetailPolicy() => IncludeErrorDetailPolicy.LocalOnly;
 
         protected virtual WindsorContainer CreateWindsorContainer()
         {
@@ -50,6 +56,16 @@ namespace WebAPI
                 Component.For<IItemsRepository>()
                     .ImplementedBy<ItemsRepository>()
                     .LifestyleSingleton());
+
+            container.Register(
+                Component.For<GroupController>()
+                    .ImplementedBy<GroupController>()
+                    .LifestyleTransient());
+
+            container.Register(
+                Component.For<IGroupRepository>()
+                    .ImplementedBy<GroupRepository>()
+                    .LifestyleTransient());
 
             return container;
         }
